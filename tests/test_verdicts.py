@@ -94,7 +94,7 @@ def test_messung_nennt_alle_zahlen_und_den_namen_der_zelle():
     assert "»große Teile (20 bis 80 %)« mit n = 200" in text and "über 200 Instanzen" in text
     assert "Next Fit 35.50" in text and "First Fit 7.50" in text and "Best Fit 5.25" in text
     assert "First Fit 0.50 und Best Fit 0.50" in text
-    assert "**7.00** Container" in text and "in 12 % der Instanzen" in text
+    assert "**7.00** Container" in text and "in 12.0 % der Instanzen" in text
 
 
 def test_messung_info_nennt_den_kleinen_gewinn():

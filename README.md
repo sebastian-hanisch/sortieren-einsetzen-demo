@@ -7,7 +7,7 @@ Erstes Stück der Konzepte-Reihe **„Packen: Reihenfolge und Platzierungsregel�
 
 ## Warum dieses Problem
 
-Pakete kommen nacheinander an und sollen in möglichst wenige gleich große Container. Man kann an zwei Stellen eingreifen: an der Regel, in welchen Container das nächste Paket kommt, und an der Reihenfolge, in der man die Pakete nimmt. Die Demo zeigt an zwölf Paketen, dass bei den Regeln First Fit und Best Fit die Reihenfolge mehr verändert, und misst dasselbe an je 200 Zufallsinstanzen in 16 Zellen.
+Pakete kommen nacheinander an und sollen in möglichst wenige gleich große Container. Man kann an zwei Stellen eingreifen: an der Regel, in welchen Container das nächste Paket kommt, und an der Reihenfolge, in der man die Pakete nimmt. Die Demo zeigt an zwei Mengen von zwölf Paketen, dass die Reihenfolge die Containerzahl bei First Fit und Best Fit stärker verändert als der Wechsel zwischen beiden Regeln (bei Beispiel 2 nicht bei jeder Startzahl der Zufallsreihenfolge), und misst dasselbe an je 200 Zufallsinstanzen in 16 Zellen.
 
 ## Modell
 
@@ -17,7 +17,7 @@ Ganzzahlige Paketgrößen s₁ … sₙ mit 1 ≤ sᵢ ≤ C, Container der Kapa
 
 - **Kern** (`sei_algorithm.py`): `reihenfolge`, `pack` (Next, First, Best Fit), `l1`, `l2`, `optimum` (DP über Bitmasken: lexikographisch kleinstes Paar aus Containerzahl und Füllung des letzten Containers), `container_pruefen` (unabhängiger Zulässigkeitsprüfer).
 - **Handbeispiele:** zwei feste Mengen von je zwölf Paketen (Kapazität 100). Die App zeigt für die gewählte Kombination die Container als gestapelte Balken, daneben alle neun Kombinationen aus Reihenfolge und Regel.
-- **Messraster:** vier Größenbereiche (kleine Teile 1 bis 25 %, mittlere 10 bis 50 %, große 20 bis 80 %, breite 1 bis 90 % der Kapazität) × vier Paketzahlen (20, 50, 100, 200) × **200 feste Instanzen** je Zelle, Kapazität 1000, Größen gleichverteilt und ganzzahlig. Maßstab ist die Schranke L₂, weil das Optimum für so viele Pakete nicht berechnet wird. Die Summen stehen als ganze Zahlen in `sei_precomputed.json` (erzeugt von `generate_precomputed.py`, in ungefähr 11 Sekunden neu zu rechnen).
+- **Messraster:** vier Größenbereiche (kleine Teile 1 bis 25 %, mittlere 10 bis 50 %, große 20 bis 80 %, breite 1 bis 90 % der Kapazität) × vier Paketzahlen (20, 50, 100, 200) × **200 feste Instanzen** je Zelle, Kapazität 1000, Größen gleichverteilt und ganzzahlig. Maßstab ist die Schranke L₂, weil das Optimum für so viele Pakete nicht berechnet wird. Die Summen stehen als ganze Zahlen in `sei_precomputed.json` (erzeugt von `generate_precomputed.py`, je nach Rechner in rund 10 bis 30 Sekunden neu zu rechnen).
 
 ## Befunde (gemessen, keine Behauptungen)
 
@@ -28,8 +28,8 @@ Alle Zahlen sind Messungen an den Instanzen dieser Demo (feste Seeds), nachgerec
 | Beispiel 1 (zwölf Pakete, Summe 459, Volumenschranke 5, Optimum 5) | Wie geliefert brauchen Next Fit, First Fit und Best Fit **7, 7, 7** Container; größte zuerst **7, 5, 5**. Die Reihenfolge verändert die Containerzahl um 2, ein Wechsel zwischen First Fit und Best Fit in keiner Zeile (`tests/test_algorithm.py`, `tests/test_claims.py`) |
 | Beispiel 2 (Summe 467, Optimum 5) | Wie geliefert **7, 6, 6**, größte zuerst **7, 5, 5** (Next Fit, First Fit, Best Fit) |
 | Wie weit hilft Sortieren bei großen Teilen und 200 Paketen? | Container über L₂ im Mittel: Next Fit 35,32, First Fit 7,54, Best Fit 5,67, FFD 0,72, BFD 0,72 (200 Instanzen) |
-| Unterscheiden sich FFD und BFD? | In **1 von 3200** Instanzen; die Mittelwerte sind in **15 von 16** Zellen gleich |
-| Best Fit gegen First Fit, beide in Lieferreihenfolge | Best Fit braucht in **16 von 16** Zellen höchstens so viele Container wie First Fit und in **13** Zellen weniger |
+| Unterscheiden sich FFD und BFD? | In **1 von 3200** Instanzen (mit anderen Startzahlen können es einige mehr sein); die Mittelwerte sind in **15 von 16** Zellen gleich |
+| Best Fit gegen First Fit, beide in Lieferreihenfolge | Im Mittel über die 200 Instanzen einer Zelle braucht Best Fit in **16 von 16** Zellen höchstens so viele Container wie First Fit und in **13** Zellen weniger (einzelne Instanzen können anders ausfallen) |
 | Wie viel spart Sortieren gegenüber First Fit in Lieferreihenfolge? | Im Mittel in **7 von 16** Zellen mindestens einen Container; in den anderen neun nicht (kleine Teile, mittlere Teile bis n = 100, große und breite Teile mit n = 20). In den 13 Zellen, in denen Best Fit besser ist als First Fit, ist der Gewinn durch Sortieren mindestens **3,6-mal** so groß wie der durch den Wechsel auf Best Fit (kleinster Wert bei großen Teilen mit n = 200) |
 | Trifft FFD die Volumenschranke L₁? (Anteil der Instanzen, n = 20 / 50 / 100 / 200) | kleine Teile: 99,0 / 100,0 / 97,0 / 96,0 %; mittlere Teile: 79,5 / 63,0 / 33,0 / 1,0 %; große Teile: 18,0 / 6,5 / 1,5 / 0,0 %; breite Teile: 34,0 / 17,5 / 15,5 / 9,0 %. Die Hypothese „FFD trifft L₁ fast immer“ gilt nur bei kleinen Teilen |
 | Trifft FFD die Schranke L₂? | In 15 von 16 Zellen nicht in allen Instanzen; nur bei kleinen Teilen mit n = 50 in allen 200 |
@@ -59,7 +59,7 @@ Alle Zahlen sind Messungen an den Instanzen dieser Demo (feste Seeds), nachgerec
 - **Verdikte:** alle Zweige und Schwellen an von Hand gesetzten Werten (`tests/test_verdicts.py`), je Preset die erwartete Art.
 - **Presets und Layout:** vollständig, Werte innerhalb der Reglergrenzen, Standard-Preset gleich Standardeinstellung; Schnellstart oben in der Seitenleiste, fester Kopf, genau das passende Preset hervorgehoben (`tests/test_layout.py`).
 - **Oberfläche:** AppTest-Rauchtest (jeder Button, jede Auswahl in jedem Wert, Startzahl an den Grenzen) und Footer-Test.
-- **Tests gesamt:** 113, Laufzeit etwa eine halbe Minute (ohne Parallelisierung).
+- **Tests gesamt:** 113, Laufzeit je nach Rechner rund zwei bis drei Minuten (ohne Parallelisierung).
 
 ## Dateistruktur
 

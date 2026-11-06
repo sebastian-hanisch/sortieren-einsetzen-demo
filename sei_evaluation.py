@@ -145,7 +145,7 @@ def verdict_messung(z: dict) -> tuple[str, str]:
     gewinn = m["FF"] - m["FFD"]
     kopf = (f"Für »{z['name']}« mit n = {z['n']} Paketen liegen die Container im Mittel über {z['seeds']} Instanzen so weit über der Schranke L2: "
             f"Next Fit {m['NF']:.2f}, First Fit {m['FF']:.2f}, Best Fit {m['BF']:.2f} in Lieferreihenfolge; nach dem Sortieren First Fit {m['FFD']:.2f} und Best Fit {m['BFD']:.2f}.")
-    fuss = f" FFD trifft die Volumenschranke L1 in {z['anteil_l1']['FFD']:.0f} % der Instanzen."
+    fuss = f" FFD trifft die Volumenschranke L1 in {z['anteil_l1']['FFD']:.1f} % der Instanzen."
     if gewinn >= GAIN_SCHWELLE:
         return "success", kopf + f" Sortieren spart gegenüber First Fit in Lieferreihenfolge im Mittel **{gewinn:.2f}** Container." + fuss
     return "info", kopf + f" Sortieren spart hier gegenüber First Fit in Lieferreihenfolge im Mittel nur **{gewinn:.2f}** Container." + fuss
